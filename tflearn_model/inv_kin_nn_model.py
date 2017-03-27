@@ -9,7 +9,7 @@ n_nodes_hl1 = 128
 n_nodes_hl2 = 128
 n_nodes_hl3 = 128
 n_nodes_hl4 = 128
-n_nodes_hl5 = 64
+#n_nodes_hl5 = 64
 
 alpha = 0.01	#learning rate, default 0.001
 
@@ -24,7 +24,7 @@ net = fully_connected(net, n_nodes_hl1, activation='sigmoid', bias=True, bias_in
 net = fully_connected(net, n_nodes_hl2, activation='sigmoid', bias=True, bias_init='truncated_normal')
 net = fully_connected(net, n_nodes_hl3, activation='sigmoid', bias=True, bias_init='truncated_normal')
 net = fully_connected(net, n_nodes_hl4, activation='sigmoid', bias=True, bias_init='truncated_normal')
-net = fully_connected(net, n_nodes_hl5, activation='sigmoid', bias=True, bias_init='truncated_normal')
+#net = fully_connected(net, n_nodes_hl5, activation='sigmoid', bias=True, bias_init='truncated_normal')
 #net = dropout(net, 0.8)
 #output layer
 net = fully_connected(net, dof_n)

@@ -30,11 +30,21 @@ test_joints = joints_data[data_n-test_size:]
 position_data = np.delete(position_data, list(range(data_n-test_size , position_data.shape[0])), axis=0)
 joints_data = np.delete(joints_data, list(range(data_n-test_size , joints_data.shape[0])), axis=0)
 
-#parameters
-n_nodes_hl1 = 1000
-n_nodes_hl2 = 1000
-n_nodes_hl3 = 1000
-n_nodes_hl4 = 1000
+ip_len = position_data.shape[1]
+
+file_tf_model = 'nn_model.py'
+exec(open(file_tf_model).read())
+
+tf.add_to_collection('hidden_1_layer_w', hidden_1_layer_w)
+tf.add_to_collection('hidden_1_layer_b', hidden_1_layer_b)
+tf.add_to_collection('hidden_2_layer_w', hidden_2_layer_w)
+tf.add_to_collection('hidden_2_layer_b', hidden_2_layer_b)
+tf.add_to_collection('hidden_3_layer_w', hidden_3_layer_w)
+tf.add_to_collection('hidden_3_layer_b', hidden_3_layer_b)
+tf.add_to_collection('hidden_4_layer_w', hidden_4_layer_w)
+tf.add_to_collection('hidden_4_layer_b', hidden_4_layer_b)
+tf.add_to_collection('output_layer_w', output_layer_w)
+tf.add_to_collection('output_layer_b', output_layer_b)
 
 batch_size = 100
 
@@ -42,54 +52,10 @@ n_epochs = 1100	#number of feed forward and back prop
 
 alpha = 0.0002	#learning rate, default 0.001
 
-#inpts and outputs
-ip_len = position_data.shape[1]
-x = tf.placeholder('float',shape=[None, ip_len ])
-y = tf.placeholder('float')
-
-hidden_1_layer = {'weights':tf.Variable(tf.random_normal([ip_len ,n_nodes_hl1])),
-					  'biases':tf.Variable(tf.random_normal([n_nodes_hl1]))
-					  }	
-
-hidden_2_layer = {'weights':tf.Variable(tf.random_normal([n_nodes_hl1,n_nodes_hl2])),
-				  'biases':tf.Variable(tf.random_normal([n_nodes_hl2]))
-				  }
-
-hidden_3_layer = {'weights':tf.Variable(tf.random_normal([n_nodes_hl2,n_nodes_hl3])),
-				  'biases':tf.Variable(tf.random_normal([n_nodes_hl3]))
-				  }
-
-hidden_4_layer = {'weights':tf.Variable(tf.random_normal([n_nodes_hl3,n_nodes_hl4])),
-				  'biases':tf.Variable(tf.random_normal([n_nodes_hl3]))
-				  }
-
-output_layer = {'weights':tf.Variable(tf.random_normal([n_nodes_hl3,dof_n])),
-				  'biases':tf.Variable(tf.random_normal([dof_n]))
-				 }
-
-def neural_network_model(data):
-	
-
-	l1 = tf.add(tf.matmul(data,hidden_1_layer['weights']), hidden_1_layer['biases'])	
-	l1 = tf.nn.tanh(l1)
-
-	l2 = tf.add(tf.matmul(l1,hidden_2_layer['weights']), hidden_2_layer['biases'])	
-	l2 = tf.nn.tanh(l2)									  		
-
-	l3 = tf.add(tf.matmul(l2,hidden_3_layer['weights']), hidden_3_layer['biases'])	
-	l3 = tf.nn.sigmoid(l3)		  
-
-	l4 = tf.add(tf.matmul(l3,hidden_4_layer['weights']), hidden_4_layer['biases'])	
-	l4 = tf.nn.sigmoid(l4)	
-
-	output = tf.add(tf.matmul(l3,output_layer['weights']), output_layer['biases'])
-
-	return output	
-
 saver = tf.train.Saver()
 
 def train_neural_network(x):
-	prediction = neural_network_model(x)
+	prediction = output
 	cost = tf.reduce_mean( tf.square(prediction-y) )
 	optimizer = tf.train.AdamOptimizer(learning_rate=alpha).minimize(cost)
 
@@ -126,19 +92,3 @@ def train_neural_network(x):
 train_neural_network(x)	
 
 
-print('postion',test_position)
-print('joints',test_joints)
-
-def use_neural_network(input_data):
-	prediction = neural_network_model(x)
-	with tf.Session() as sess:
-		sess.run(tf.global_variables_initializer())
-		saver.restore(sess, tf.train.latest_checkpoint('./'))
-		
-		result = prediction.eval(feed_dict={x:input_data})
-		return result        
-        
-ip =  [[ -7.63422434e-02,   3.26458617e-01,   5.23922397e-01 ,  2.70056870e+00]]
-
-
-print(use_neural_network(ip))

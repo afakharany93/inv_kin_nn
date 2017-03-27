@@ -14,7 +14,7 @@ Pz = l1 + (l3 + d4) * sin(theta3)
 
 #user defined parameters
 #data parameters
-data_n = 1*(19**4)	#size of vectors of data
+data_n = 5*(19**4)	#size of vectors of data
 dof_n = 4	#number of dof
 position_variables_n = 4 	#number of position variables, e.g. 2 => planar, 3=> 3d position, 6=> 3d position + orientation
 
@@ -47,3 +47,5 @@ orient = joint1 + joint3
 with open('robot_set.pickle','wb') as f:
 	pickle.dump([data_n, position_variables_n, dof_n ,Px, Py, Pz,orient, joint1, joint2, joint3, joint4], f)
 	#			leave first 3 elements reserved, start your changes after them, there are the position data, then the joints data
+
+print('\ndata saved :)')
