@@ -1,2 +1,0 @@
-model_checkpoint_path: "/home/afakharany93/projects/inverse_kinematics_nn/tflearn_model/inv_kin.model"
-all_model_checkpoint_paths: "/home/afakharany93/projects/inverse_kinematics_nn/tflearn_model/inv_kin.model"
